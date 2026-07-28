@@ -1,0 +1,287 @@
+.settings-page {
+  padding: 32px;
+  color: #111827;
+}
+
+.page-title h1 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.page-title p {
+  color: #6b7280;
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+
+/* ===== Grid ===== */
+.grid-wrap {
+  display: grid;
+  grid-template-columns: 64% 34%;
+  gap: 24px;
+}
+
+/* ===== Card ===== */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+}
+
+.card + .card {
+  margin-top: 24px;
+}
+
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 22px;
+}
+
+/* ===== Form ===== */
+.form-item {
+  margin-bottom: 20px;
+}
+
+.form-item label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+  color: #111827;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+/* ===== Upload Box ===== */
+.upload-box {
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  text-align: center;
+  padding: 36px 16px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.upload-box:hover {
+  border-color: #2563eb;
+}
+
+.upload-box .icon-text {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.upload-box a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.upload-desc {
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+/* ===== Save Button ===== */
+.btn-save-org {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.btn-save-org:hover {
+  background-color: #1d4ed8;
+}
+
+/* ===== Toggle Row ===== */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.toggle-row:last-child {
+  border-bottom: none;
+}
+
+.toggle-text-wrap h4 {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.toggle-text-wrap p {
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* ===== Toggle Switch ===== */
+.toggle {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #d1d5db;
+  border-radius: 99px;
+  transition: 0.2s ease;
+}
+
+.toggle-slider:before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: 0.2s ease;
+}
+
+input:checked + .toggle-slider {
+  background: #2563eb;
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(22px);
+}
+
+/* ===== Sidebar Cards ===== */
+.sidebar-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+  margin-bottom: 20px;
+}
+
+.sidebar-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ===== Info Lines ===== */
+.info-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+.info-line:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  color: #6b7280;
+}
+
+.badge-prod {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ===== Danger Zone ===== */
+.danger-desc {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 16px;
+}
+
+.btn-danger-full {
+  width: 100%;
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  padding: 11px;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-danger-full:hover {
+  background: #b91c1c;
+}
+
+.btn-danger-outline {
+  width: 100%;
+  background: transparent;
+  color: #dc2626;
+  border: 1px solid #dc2626;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-danger-outline:hover {
+  background: #fef2f2;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .grid-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .settings-page {
+    padding: 16px;
+  }
+  .card,
+  .sidebar-card {
+    padding: 16px;
+  }
+}
