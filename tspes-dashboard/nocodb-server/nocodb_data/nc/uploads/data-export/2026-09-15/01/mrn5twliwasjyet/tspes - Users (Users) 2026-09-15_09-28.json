@@ -1,0 +1,5 @@
+[
+{"username":"admin","email":"admin@tspes.local","name":"Administrator","password_hash":"07274ebd25921ef878eca2c1ced42122d30736d642feee5b2115316db4841c92","salt":"95a6a68a22f78e5ce4f1806ee0605696","role":"admin","status":"Active","reset_code_hash":null,"reset_code_expires":null,"last_login":"2026-09-14 05:23:41+00:00","signup_at":"2026-09-14 03:22:13+00:00"},
+{"username":"yang","email":"66085206@qq.com","name":"Yang","password_hash":"22ade2a2a43525c78e56a7a8500c59685e328f1a10a7e87c2f63fdfed491b5e0","salt":"e61f4c25c957692dca5deabd39cd14d7","role":"admin","status":"Active","reset_code_hash":null,"reset_code_expires":null,"last_login":"2026-09-14 05:03:26+00:00","signup_at":"2026-09-14 03:27:07+00:00"},
+{"username":"yang001","email":"yang001@qq.com","name":"Yang001","password_hash":"2a0676349f4d3a314415bc3fe6a3ef86c6ec4bfd717076068ddc90bbad33abea","salt":"452edd271ed11b23924744230e34336b","role":"participant","status":"Active","reset_code_hash":null,"reset_code_expires":null,"last_login":"2026-09-15 01:23:24+00:00","signup_at":"2026-09-15 01:19:02+00:00"}
+]

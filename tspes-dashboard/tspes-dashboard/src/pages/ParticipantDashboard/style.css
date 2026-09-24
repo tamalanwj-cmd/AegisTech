@@ -1,0 +1,117 @@
+/* ===== P03 Participant Dashboard content (shell styles live in ParticipantLayout) ===== */
+
+/* D2 — Welcome banner */
+.pd-welcome {
+  background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin-bottom: 28px;
+}
+
+.pd-welcome h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.pd-welcome p {
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+/* Section heading */
+.pd-section-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.pd-section-head h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.pd-section-head span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* D3 — Exercise card grid */
+.pd-exercise-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.pd-exercise-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.pd-exercise-card:hover {
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+.pd-exercise-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  min-height: 22px;
+}
+
+.pd-due {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.pd-exercise-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.pd-exercise-course {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 18px;
+}
+
+.pd-progress-card {
+  margin-bottom: 18px;
+}
+
+/* D4 — Continue / Start button */
+.pd-continue-btn {
+  width: 100%;
+  padding: 11px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pd-continue-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.pd-continue-btn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: default;
+}

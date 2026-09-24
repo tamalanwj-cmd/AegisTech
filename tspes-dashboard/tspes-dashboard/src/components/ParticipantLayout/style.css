@@ -1,0 +1,312 @@
+/* ===== Shared participant portal styles (P03-P07) ===== */
+
+/* Page shell */
+.pd-page {
+  min-height: 100vh;
+  background: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.pd-content {
+  flex: 1;
+  padding: 28px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Navbar (D1) */
+.pd-navbar {
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.pd-navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pd-logo {
+  width: 36px;
+  height: 36px;
+  background: #2563eb;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.pd-navbar-title h4 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.pd-navbar-title p {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.pd-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Notifications (D5) */
+.pd-bell-wrap,
+.pd-user-wrap {
+  position: relative;
+}
+
+.pd-bell {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  color: #cbd5e1;
+}
+
+.pd-bell:hover {
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.pd-bell-badge {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+}
+
+/* User menu (D6) */
+.pd-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #cbd5e1;
+  font-size: 14px;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.pd-user:hover {
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.pd-avatar {
+  width: 30px;
+  height: 30px;
+  background: #334155;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.pd-caret {
+  font-size: 10px;
+  color: #64748b;
+}
+
+/* Dropdown panels */
+.pd-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  background: #ffffff;
+  color: #1e293b;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.18);
+  min-width: 260px;
+  z-index: 50;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.pd-dropdown-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pd-user-role {
+  font-size: 12px;
+  font-weight: 500;
+  color: #2563eb;
+}
+
+.pd-user-email {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.pd-notification-item {
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.pd-notification-item:last-child {
+  border-bottom: none;
+}
+
+.pd-notification-text {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.pd-notification-time {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.pd-menu-item {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #1e293b;
+  cursor: pointer;
+}
+
+.pd-menu-item:hover {
+  background: #f1f5f9;
+}
+
+/* ===== Shared card / status / progress utilities ===== */
+
+.pd-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.pd-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.pd-status-progress {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1d4ed8;
+}
+
+.pd-status-notstarted {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.pd-status-completed {
+  background: rgba(16, 185, 129, 0.1);
+  color: #047857;
+}
+
+.pd-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pd-progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pd-progress-fill {
+  height: 100%;
+  background: #2563eb;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.pd-progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  min-width: 34px;
+  text-align: right;
+}
+
+/* Page header used by P04-P07 (back link + title) */
+.pd-page-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.pd-back-link {
+  font-size: 13px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.pd-back-link:hover {
+  text-decoration: underline;
+}
+
+.pd-page-head h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.pd-page-head p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .pd-content {
+    padding: 16px;
+  }
+  .pd-navbar {
+    padding: 0 16px;
+  }
+  .pd-user > span:not(.pd-caret) {
+    display: none;
+  }
+}

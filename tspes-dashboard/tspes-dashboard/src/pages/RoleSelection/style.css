@@ -1,0 +1,122 @@
+/* ===== P04 Role Selection ===== */
+
+/* R1/R2 — Role card grid */
+.role-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.role-card {
+  font-family: inherit;
+  text-align: left;
+  position: relative;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 22px 20px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
+}
+
+.role-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
+}
+
+.role-card.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+/* Selection check bubble */
+.role-check {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  background: transparent;
+}
+
+.role-card.selected .role-check {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+.role-card h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 10px;
+  padding-right: 30px;
+}
+
+.role-card p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.role-select-hint {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-top: 14px;
+}
+
+.role-card.selected .role-select-hint {
+  color: #1d4ed8;
+}
+
+/* R3 — Confirm bar */
+.role-confirm-bar {
+  position: sticky;
+  bottom: 16px;
+  margin-top: 28px;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25);
+  font-size: 14px;
+}
+
+.role-confirm-btn {
+  padding: 11px 24px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.role-confirm-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.role-confirm-btn:disabled {
+  background: #334155;
+  color: #64748b;
+  cursor: not-allowed;
+}

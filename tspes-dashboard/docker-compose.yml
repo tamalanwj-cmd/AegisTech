@@ -1,0 +1,33 @@
+# TSPES one-click deployment: nginx-served SPA + NocoDB backend.
+# Managed by deploy.bat (Windows) / deploy.sh (Linux). Both docker and podman work.
+# Data persists in ./nocodb-server/nocodb_data (shared with the legacy dev compose).
+#
+# Optional env overrides: APP_PORT, NOCODB_PORT, NOCODB_URL,
+#                         NOCODB_BASE_ID, NOCODB_TABLE_ID, NOCODB_TOKEN
+
+services:
+  nocodb:
+    image: nocodb/nocodb:2026.06.0
+    container_name: nocodb
+    restart: unless-stopped
+    ports:
+      - "${NOCODB_PORT:-8080}:8080"
+    volumes:
+      - ./nocodb-server/nocodb_data:/usr/app/data
+
+  app:
+    build:
+      context: ./tspes-dashboard
+      args:
+        # SPA calls NocoDB through the nginx /nocodb proxy (same origin), so no
+        # rebuild is needed when the host name or IP changes.
+        NOCODB_URL: ${NOCODB_URL:-/nocodb}
+        NOCODB_BASE_ID: ${NOCODB_BASE_ID:-pm23znilouha1mk}
+        NOCODB_TABLE_ID: ${NOCODB_TABLE_ID:-mrn5twliwasjyet}
+        NOCODB_TOKEN: ${NOCODB_TOKEN:-nc_pat_GD2Zlk0NAByvV3Qqi5JttB2abkskRo2HgQJPuoDQ}
+    container_name: tspes-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:80"
+    depends_on:
+      - nocodb

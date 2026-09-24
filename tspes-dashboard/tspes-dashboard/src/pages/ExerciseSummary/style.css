@@ -1,0 +1,183 @@
+/* ===== P06 Exercise Summary ===== */
+
+/* S1 — Completion banner */
+.sum-banner {
+  border-radius: 12px;
+  padding: 26px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.sum-done {
+  background: linear-gradient(120deg, #065f46 0%, #0f766e 100%);
+}
+
+.sum-partial {
+  background: linear-gradient(120deg, #0f172a 0%, #1e3a8a 100%);
+}
+
+.sum-banner-icon {
+  font-size: 34px;
+}
+
+.sum-banner-text {
+  flex: 1;
+}
+
+.sum-banner-text h2 {
+  font-size: 21px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.sum-banner-text p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sum-banner-progress {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* S2 — Summary info */
+.sum-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.sum-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sum-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sum-info-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+/* S3 — Response history */
+.sum-history-head {
+  margin-bottom: 16px;
+}
+
+.sum-history {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sum-history-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sum-history-top > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sum-history-index {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sum-status {
+  font-size: 11px;
+}
+
+.sum-history-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.sum-history-inject {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.sum-history-response {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sum-history-response p {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* S4 — Actions */
+.sum-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.sum-back-btn,
+.sum-resume-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.sum-back-btn {
+  background: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.sum-back-btn:hover {
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.sum-resume-btn {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.sum-resume-btn:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 640px) {
+  .sum-banner {
+    flex-wrap: wrap;
+  }
+}
