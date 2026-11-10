@@ -26,7 +26,6 @@ const ExerciseSummary = () => {
   const [injects, setInjects] = useState([]);
   const [session, setSession] = useState(null);
   const [gradingResponses, setGradingResponses] = useState([]);
-  const [gradingError, setGradingError] = useState('');
   const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
