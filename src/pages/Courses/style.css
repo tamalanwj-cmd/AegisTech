@@ -1,0 +1,329 @@
+/* Courses page — page-specific styles only.
+   Shared dialog / form classes (.modal-*, .form-*, .picker, .enrol-row,
+   .btn-primary/.btn-secondary/.btn-danger) come from components/Modal/style.css
+   and must not be redefined here. Player-specific rules are scoped under
+   .courses-page so they cannot leak to other pages. */
+
+.courses-page {
+  padding: 32px;
+}
+
+/* ===== Page header ===== */
+.courses-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.courses-page .header-title h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.courses-page .header-title p {
+  font-size: 18px;
+  color: #64748b;
+}
+
+.courses-page .create-course-btn {
+  background-color: #1d4ed8;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.courses-page .create-course-btn:hover:not(:disabled) {
+  background-color: #1e40af;
+}
+
+.courses-page .create-course-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.courses-page .create-course-btn::before {
+  content: "+";
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ===== Notices & errors ===== */
+.courses-page .notice-banner,
+.courses-page .error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.courses-page .notice-banner {
+  background: #ecfdf5;
+  color: #166534;
+  border: 1px solid #a7f3d0;
+}
+
+.courses-page .error-banner {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* ===== Loading / empty states ===== */
+.courses-page .page-state {
+  padding: 48px;
+  text-align: center;
+  color: #64748b;
+  font-size: 16px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* ===== Courses grid ===== */
+.courses-page .courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(550px, 1fr));
+  gap: 24px;
+}
+
+/* ===== Course card ===== */
+.courses-page .course-card {
+  background-color: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.courses-page .course-card.archived {
+  opacity: 0.7;
+}
+
+/* ===== Status badge ===== */
+.courses-page .status-badge {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.courses-page .status-badge.active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.courses-page .status-badge.draft {
+  background-color: #fffbeb;
+  color: #92400e;
+}
+
+.courses-page .status-badge.archived {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+/* ===== Course title & description ===== */
+.courses-page .course-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 12px;
+  padding-right: 90px;
+}
+
+.courses-page .course-desc {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  min-height: 48px;
+}
+
+/* ===== Course meta ===== */
+.courses-page .course-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.courses-page .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.courses-page .meta-item::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.courses-page .meta-item.enrolled::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2364748b' viewBox='0 0 24 24'%3E%3Cpath d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/%3E%3C/svg%3E");
+}
+
+.courses-page .meta-item.scenario::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2364748b' viewBox='0 0 24 24'%3E%3Cpath d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/%3E%3C/svg%3E");
+}
+
+.courses-page .meta-item.scenario {
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== Card actions ===== */
+.courses-page .card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.courses-page .left-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.courses-page .btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* width/height reset the round icon-button rules other pages define globally. */
+  width: auto;
+  height: auto;
+  font-size: 15px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+}
+
+.courses-page .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.courses-page .btn-edit {
+  background-color: white;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+}
+
+.courses-page .btn-edit::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%231e293b' viewBox='0 0 24 24'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.courses-page .btn-edit:hover:not(:disabled) {
+  background-color: #f8fafc;
+}
+
+.courses-page .btn-archive {
+  color: #64748b;
+}
+
+.courses-page .btn-archive::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2364748b' viewBox='0 0 24 24'%3E%3Cpath d='M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5zM5.12 5l.81-1h12l.94 1H5.12z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.courses-page .btn-archive:hover:not(:disabled) {
+  color: #1e293b;
+  background-color: #f1f5f9;
+}
+
+.courses-page .btn-delete {
+  color: #dc2626;
+}
+
+.courses-page .btn-delete::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dc2626' viewBox='0 0 24 24'%3E%3Cpath d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z'/%3E%3C/svg%3E");
+  background-size: contain;
+}
+
+.courses-page .btn-delete:hover:not(:disabled) {
+  background-color: #fef2f2;
+}
+
+/* ===== Enrolment picker helpers (rendered inside the shared modal) ===== */
+.group-select-row {
+  margin-bottom: 10px;
+}
+
+.enrol-list {
+  margin-top: 12px;
+}
+
+.role-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.enrol-remove {
+  flex-shrink: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+  .courses-page .courses-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .courses-page {
+    padding: 16px;
+  }
+  .courses-page .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .courses-page .course-card {
+    padding: 20px;
+  }
+  .courses-page .status-badge {
+    top: 20px;
+    right: 20px;
+  }
+}

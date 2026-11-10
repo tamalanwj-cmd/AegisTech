@@ -1,0 +1,315 @@
+.builder-page {
+  padding: 32px;
+  color: #1e293b;
+}
+
+/* ===== Back link ===== */
+.builder-page .back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #2563eb;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.builder-page .back-link:hover {
+  text-decoration: underline;
+}
+
+/* ===== Header ===== */
+.builder-page .builder-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.builder-page .builder-title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 12px;
+}
+
+.builder-page .builder-badges {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.builder-page .category-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.builder-page .category-tag.public-health {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.builder-page .category-tag.infrastructure {
+  background-color: #fff7ed;
+  color: #c2410c;
+}
+
+.builder-page .category-tag.natural-disaster {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.builder-page .category-tag.cybersecurity {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.builder-page .category-tag.other {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.builder-page .status-tag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.builder-page .status-tag.published {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.builder-page .status-tag.draft {
+  background-color: #fffbeb;
+  color: #d97706;
+}
+
+.builder-page .status-tag.archived {
+  background-color: #f1f5f9;
+  color: #64748b;
+}
+
+.builder-page .btn-add-inject {
+  background-color: #1d4ed8;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.builder-page .btn-add-inject::before {
+  content: "+";
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.builder-page .btn-add-inject:hover:not(:disabled) {
+  background-color: #1e40af;
+}
+
+.builder-page .btn-add-inject:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== Banners & states ===== */
+.builder-page .notice-banner,
+.builder-page .error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+.builder-page .notice-banner {
+  background: #ecfdf5;
+  color: #166534;
+  border: 1px solid #a7f3d0;
+}
+
+.builder-page .error-banner {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+.builder-page .page-state {
+  padding: 40px 8px;
+  color: #64748b;
+  font-size: 16px;
+  text-align: center;
+}
+
+.builder-page .not-found {
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.builder-page .not-found h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.builder-page .not-found p {
+  color: #64748b;
+  font-size: 15px;
+  margin-bottom: 20px;
+}
+
+/* ===== Inject list ===== */
+.builder-page .inject-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.builder-page .inject-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.builder-page .inject-seq {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #1d4ed8;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.builder-page .inject-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.builder-page .inject-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.builder-page .inject-desc {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.builder-page .inject-info {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.builder-page .inject-info-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.builder-page .inject-role {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.builder-page .inject-rubric-tag {
+  margin-left: 6px;
+  background: #eef2ff;
+  color: #4338ca;
+}
+
+.builder-page .inject-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.builder-page .inject-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.builder-page .inject-btn:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.builder-page .inject-btn.danger {
+  color: #dc2626;
+}
+
+.builder-page .inject-btn.danger:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.builder-page .inject-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .builder-page {
+    padding: 16px;
+  }
+  .builder-page .builder-header {
+    flex-direction: column;
+  }
+  .builder-page .btn-add-inject {
+    width: 100%;
+    justify-content: center;
+  }
+}

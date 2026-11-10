@@ -1,0 +1,368 @@
+/* Canonical dialog + form styles shared by every admin popup.
+   Page stylesheets should not redefine these — import the Modal component and
+   reuse the class names. */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1000;
+  animation: modal-fade 120ms ease-out;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  animation: modal-rise 140ms ease-out;
+}
+
+.modal-sm { max-width: 420px; }
+.modal-md { max-width: 540px; }
+.modal-lg { max-width: 760px; }
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.modal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.modal-icon.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.modal-close {
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-close:hover:not(:disabled) {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.modal-close:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* ------------------------------- form fields ------------------------------ */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.form-field.span-2 {
+  grid-column: span 2;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.form-field .required {
+  color: #dc2626;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #0f172a;
+  background: #fff;
+  font-family: inherit;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 78px;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-field input:disabled,
+.form-field select:disabled,
+.form-field textarea:disabled {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.field-hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.field-count {
+  font-size: 12px;
+  color: #94a3b8;
+  align-self: flex-end;
+}
+
+.form-error {
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+/* --------------------------- multi-select pickers ------------------------- */
+
+.picker {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  max-height: 168px;
+  overflow-y: auto;
+}
+
+.picker-empty {
+  padding: 12px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #1e293b;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+}
+
+.picker-item:last-child {
+  border-bottom: none;
+}
+
+.picker-item:hover {
+  background: #f8fafc;
+}
+
+.picker-item input[type='checkbox'] {
+  width: auto;
+  margin: 0;
+  accent-color: #2563eb;
+}
+
+.picker-item .picker-meta {
+  margin-left: auto;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* Enrolled participants each carry the role they will play. */
+.enrol-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.enrol-row:last-child {
+  border-bottom: none;
+}
+
+.enrol-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: #1e293b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.enrol-row select {
+  width: 180px;
+  padding: 6px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+/* -------------------------------- buttons -------------------------------- */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
+.btn-secondary.sm {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ------------------------------ confirm body ------------------------------ */
+
+.confirm-msg {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #334155;
+}
+
+.confirm-details {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.confirm-detail-row {
+  display: flex;
+  gap: 12px;
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.confirm-detail-row dt {
+  width: 108px;
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.confirm-detail-row dd {
+  margin: 0;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes modal-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-rise {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); }
+  to { opacity: 1; transform: none; }
+}
