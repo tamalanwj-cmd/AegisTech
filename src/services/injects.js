@@ -8,6 +8,7 @@
  * Columns: scenario_id, title, description, information, sequence,
  *          assigned_role, rubric.
  */
+
 import { supabase } from './supabaseClient';
 
 export const normalizeInject = (row) => ({
@@ -17,8 +18,6 @@ export const normalizeInject = (row) => ({
   description: row.description || '',
   information: row.information || '',
   sequence: row.order_number ?? 0,
-  assignedRole: row.assigned_role || '',
-  rubric: row.rubric || '',
 });
 
 export async function listInjects(scenarioId) {
@@ -30,9 +29,7 @@ export async function listInjects(scenarioId) {
       title,
       description,
       information,
-      order_number,
-      assigned_role,
-      rubric
+      order_number
     `);
 
   if (scenarioId) {
@@ -43,10 +40,7 @@ export async function listInjects(scenarioId) {
     ascending: true,
   });
 
-  if (error) {
-    console.error('Failed to retrieve injects:', error);
-    throw new Error(error.message || 'Could not load injects');
-  }
+  if (error) throw error;
 
   return (data || [])
     .map(normalizeInject)
@@ -59,8 +53,6 @@ export async function createInject({
   description,
   information,
   sequence,
-  assignedRole,
-  rubric,
 }) {
   const cleanTitle = String(title || '').trim();
 
@@ -75,8 +67,6 @@ export async function createInject({
       description: String(description || '').trim(),
       information: String(information || '').trim(),
       order_number: Number(sequence) || 0,
-      assigned_role: String(assignedRole || '').trim(),
-      rubric: String(rubric || '').trim(),
     })
     .select('id')
     .single();
@@ -88,7 +78,7 @@ export async function createInject({
 
 export async function updateInject(
   id,
-  { title, description, information, sequence, assignedRole, rubric }
+  { title, description, information, sequence }
 ) {
   const cleanTitle = String(title || '').trim();
 
@@ -101,8 +91,6 @@ export async function updateInject(
       description: String(description || '').trim(),
       information: String(information || '').trim(),
       order_number: Number(sequence) || 0,
-      assigned_role: String(assignedRole || '').trim(),
-      rubric: String(rubric || '').trim(),
     })
     .eq('id', id);
 

@@ -98,6 +98,7 @@ export function courseParticipants(course, group, userById, userOrder) {
         username: user?.username || '',
         email: user?.email || '',
         role: enrolment?.role || '',
+        roleId: enrolment?.roleId || null,
       };
     })
     .sort(
@@ -138,8 +139,6 @@ export async function loadOverview() {
     submittedAt: r.submittedAt,
     marks: r.marks
   })));
-    console.log('[Marking] Responses retrieved:', responses.length);
-    console.log('[Marking] Sample response:', responses[0]);
   } catch (error) {
     console.error('[Marking] Failed to retrieve responses:', error);
     responsesAvailable = false;

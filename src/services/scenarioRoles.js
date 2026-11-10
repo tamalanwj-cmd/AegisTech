@@ -1,5 +1,6 @@
 import { supabase } from './supabaseClient';
 
+
 export async function listScenarioRoles(scenarioId) {
   const { data, error } = await supabase
     .from('scenario_roles')

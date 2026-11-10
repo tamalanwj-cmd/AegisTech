@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { courseParticipants, loadOverview, statusClass } from '../../services/overview';
 import { MARKS_MAX, formatDuration, isAnswered, saveMark } from '../../services/responses';
 import { getCurrentUser } from '../../services/auth';
+import { getInjectRubric } from '../../services/injectRubrics';
 import './style.css';
 
 /**
@@ -27,6 +28,10 @@ const MarkingWorkspace = () => {
 
   const [marks, setMarks] = useState('');
   const [feedback, setFeedback] = useState('');
+  const [rubric, setRubric] = useState('');
+  const [rubricLoading, setRubricLoading] = useState(false);
+  const [rubricError, setRubricError] = useState('');
+
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState('');
   const [formError, setFormError] = useState('');
@@ -120,6 +125,45 @@ const MarkingWorkspace = () => {
   const inject = injects[injectIndex] || null;
   const response =
     participant && inject ? responseMap.get(`${participant.enrollmentId}:${inject.Id}`) || null : null;
+
+    // Load the rubric matching the selected Inject and participant's role.
+  useEffect(() => {
+    let cancelled = false;
+
+  const loadRubric = async () => {
+      setRubric('');
+      setRubricError('');
+
+      if (!inject?.Id || !participant?.roleId) {
+        setRubricLoading(false);
+        return;
+      }
+
+      setRubricLoading(true);
+
+      try {
+        const result = await getInjectRubric(inject.Id, participant.roleId);
+
+        if (!cancelled) {
+          setRubric(result);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setRubricError(error.message || 'Could not load rubric.');
+        }
+      } finally {
+        if (!cancelled) {
+          setRubricLoading(false);
+        }
+      }
+    };
+
+    loadRubric();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [inject?.Id, participant?.roleId]);
 
   // Load the saved mark/comment whenever the selection changes.
   useEffect(() => {
@@ -319,25 +363,24 @@ const MarkingWorkspace = () => {
         {/* Rubric */}
         <section className="mark-panel">
           <div className="mark-panel-head">
-            <h2>Rubrics</h2>
-            {inject.assignedRole && (
-              <span className="mark-role">Target role: {inject.assignedRole}</span>
-            )}
+            <h2>Rubric</h2>
+            <span className="mark-role">
+              Role: {participant.role || 'No role assigned'}
+            </span>
           </div>
           <div className="mark-panel-body">
-            {inject.rubric ? (
-              <pre className="mark-rubric">{inject.rubric}</pre>
-            ) : (
-              <p className="mark-empty">
-                No rubric recorded for this inject. Add one in the{' '}
-                {scenario ? (
-                  <Link to={`/admin/scenarios/${scenario.Id}/builder`}>scenario builder</Link>
-                ) : (
-                  'scenario builder'
-                )}{' '}
-                so every marker scores consistently.
-              </p>
-            )}
+            {rubricLoading ? (
+                <p className="mark-empty">Loading rubric...</p>
+              ) : rubricError ? (
+                <p className="mark-empty">{rubricError}</p>
+              ) : rubric ? (
+                <pre className="mark-rubric">{rubric}</pre>
+              ) : (
+                <p className="mark-empty">
+                  No rubric has been configured for this participant's role.
+                  Add one in the scenario builder.
+                </p>
+              )}
             {inject.description && (
               <div className="mark-inject-brief">
                 <h3>Inject {inject.sequence}</h3>

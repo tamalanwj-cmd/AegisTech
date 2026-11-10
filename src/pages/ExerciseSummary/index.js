@@ -92,13 +92,6 @@ const ExerciseSummary = () => {
 
     setGradingResponses(enrolmentMarks);
 
-    console.log('[SUMMARY DEBUG]', {
-    scenarioId: id,
-    userId,
-    injectIds: ctx.injects.map((inject) => inject.Id),
-    savedMarks,
-    });
-
     setPhase('ready');
     } catch (e) {
       setLoadError(e.message || 'Could not load the summary');

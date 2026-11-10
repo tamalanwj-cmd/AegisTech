@@ -70,7 +70,6 @@ export async function logout() {
 }
 
 /* -------------------------------- login ----------------------------------- */
-
 export async function login({
   identifier,
   password,
@@ -93,6 +92,24 @@ export async function login({
   }
 
   const user = data.user;
+
+  // Verify that the account exists and is active.
+  const { data: account, error: accountError } = await supabase
+    .from('accounts')
+    .select('status')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  if (accountError || !account || account.status !== 'Active') {
+    await supabase.auth.signOut();
+
+    if (accountError) {
+      throw new Error('Unable to verify your account. Please try again.');
+    }
+
+    throw new Error('Your account is inactive. Please contact an administrator.');
+  }
+
   const role = user.app_metadata?.role || 'participant';
 
   if (portal === 'admin' && role !== 'admin') {
@@ -113,6 +130,7 @@ export async function login({
     isAdmin: role === 'admin',
   };
 }
+
 
 /* ---------------------------- Edge Function ------------------------------- */
 
@@ -313,12 +331,21 @@ export async function updateUser(
   };
 }
 
+
 /**
- * Account deletion has not yet been migrated.
- * This placeholder preserves the existing Users page import.
+ * Activate or deactivate an account without deleting its records.
  */
-export async function deleteUser() {
-  throw new Error(
-    'Account deletion is temporarily unavailable while the Supabase migration is being completed.'
-  );
+export async function setUserStatus(id, status) {
+  if (!id) {
+    throw new Error('A valid account ID is required');
+  }
+
+  const cleanStatus = sanitizeStatus(status, '');
+
+  if (!cleanStatus) {
+    throw new Error('Invalid account status');
+  }
+
+  return updateUser(id, { status: cleanStatus });
 }
+

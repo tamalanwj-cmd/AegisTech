@@ -1,8 +1,6 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-console.log('SUPABASE CLIENT FILE LOADED');
-
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
 const supabasePublishableKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
@@ -22,9 +20,3 @@ export const supabase = createClient(
   }
 );
 
-supabase.auth.getSession().then(({ data, error }) => {
-  console.log(
-    'Supabase connection:',
-    error ? error.message : 'Connected'
-  );
-});

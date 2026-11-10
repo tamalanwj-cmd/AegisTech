@@ -37,4 +37,5 @@ export async function loadExerciseContext(
     enrolment,
     injects: scenario && enrolment ? injects : [],
   };
+
 }

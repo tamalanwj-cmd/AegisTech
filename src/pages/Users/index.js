@@ -3,10 +3,9 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 import Modal from '../../components/Modal';
 import {
   PASSWORD_MIN_LENGTH,
-  ROLES,
   STATUSES,
   createUser,
-  deleteUser,
+  setUserStatus,
   getCurrentUser,
   listUsers,
   updateUser,
@@ -15,9 +14,9 @@ import './style.css';
 
 /* ------------------------------- helpers --------------------------------- */
 
-const ROLE_TABS = ['All', ...ROLES.map((r) => r.charAt(0).toUpperCase() + r.slice(1))];
+const ROLE_TABS = ['All', 'Admin', 'Participant'];
 
-/** Roles the admin may assign; legacy roles keep rendering in the table only. */
+/** Roles the admin may assign */
 const ROLE_OPTIONS = [
   { value: 'admin', label: 'Administrator' },
   { value: 'participant', label: 'Participant' },
@@ -76,7 +75,7 @@ const Users = () => {
   const [activeTab, setActiveTab] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
 
-  const [dialog, setDialog] = useState(null); // { mode: 'create' | 'edit' | 'delete', user? }
+  const [dialog, setDialog] = useState(null); // { mode: 'create' | 'edit' | 'status', user? }
   const [form, setForm] = useState(emptyCreateForm);
   const [formError, setFormError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -159,9 +158,9 @@ const Users = () => {
     setDialog({ mode: 'edit', user });
   };
 
-  const openDelete = (user) => {
+  const openStatusChange = (user) => {
     setFormError('');
-    setDialog({ mode: 'delete', user });
+    setDialog({ mode: 'status', user });
   };
 
   const closeDialog = () => {
@@ -209,9 +208,25 @@ const Users = () => {
         setNotice(`Account "${username}" created.`);
       } else {
         const target = dialog.user;
-        if (isMe(target) && form.role !== 'admin') {
-          throw new Error('You cannot remove your own administrator role');
-        }
+
+          if (isMe(target) && form.role !== 'admin') {
+            throw new Error('You cannot remove your own administrator role');
+          }
+
+          if (isMe(target) && form.status === 'Inactive') {
+            throw new Error('You cannot deactivate your own account.');
+          }
+
+          if (
+            target.role === 'admin' &&
+            target.status === 'Active' &&
+            form.status === 'Inactive' &&
+            adminCount <= 1
+          ) {
+            throw new Error(
+              'This is the last active administrator. Create another admin first.'
+            );
+          }
         const username = form.username.trim();
         await updateUser(target.Id, {
           username,
@@ -230,26 +245,48 @@ const Users = () => {
     }
   };
 
-  const handleDelete = async () => {
-    const target = dialog?.user;
+  const handleStatusChange = async () => {
+  const target = dialog?.user;
     if (!target) return;
+
     setFormError('');
     setSaving(true);
+
+    const newStatus =
+      target.status === 'Active' ? 'Inactive' : 'Active';
+
     try {
       if (currentUserLoading || !me) {
-        throw new Error('Unable to verify your account. Please refresh and try again.');
+        throw new Error(
+          'Unable to verify your account. Please refresh and try again.'
+        );
       }
 
-      if (isMe(target)) throw new Error('You cannot delete the account you are signed in with');
-      if (target.role === 'admin' && target.status === 'Active' && adminCount <= 1) {
-        throw new Error('This is the last active administrator — create another admin first');
+      if (isMe(target) && newStatus === 'Inactive') {
+        throw new Error('You cannot deactivate your own account.');
       }
-      await deleteUser(target.Id);
-      setNotice(`Account "${target.username}" deleted.`);
+
+      if (
+        target.role === 'admin' &&
+        target.status === 'Active' &&
+        newStatus === 'Inactive' &&
+        adminCount <= 1
+      ) {
+        throw new Error(
+          'This is the last active administrator. Create another admin first.'
+        );
+      }
+
+      await setUserStatus(target.Id, newStatus);
+
+      setNotice(
+        `Account "${target.username}" ${newStatus === 'Inactive' ? 'deactivated' : 'reactivated'}.`
+      );
+
       closeDialog();
       await load();
     } catch (e) {
-      setFormError(e.message || 'Delete failed');
+      setFormError(e.message || 'Account status change failed');
     } finally {
       setSaving(false);
     }
@@ -361,10 +398,27 @@ const Users = () => {
               <span className="text-muted" title={u.last_login ? `Last login: ${u.last_login}` : 'Never signed in'}>
                 {formatDate(u.signup_at)}
               </span>
-              <div className="action-buttons">
-                <button className="btn-edit" onClick={() => openEdit(u)} title="Edit account">✎</button>
-                <button className="btn-delete" onClick={() => openDelete(u)} title="Delete account">🗑</button>
-              </div>
+                <div className="action-buttons">
+                  <button
+                    className="btn-edit"
+                    onClick={() => openEdit(u)}
+                    title="Edit account"
+                    aria-label="Edit account"
+                  >
+                    ✎
+                  </button>
+
+                  <button
+                    className={`btn-status ${
+                      u.status === 'Active' ? 'btn-deactivate' : 'btn-reactivate'
+                    }`}
+                    onClick={() => openStatusChange(u)}
+                    title={u.status === 'Active' ? 'Deactivate account' : 'Reactivate account'}
+                    aria-label={u.status === 'Active' ? 'Deactivate account' : 'Reactivate account'}
+                  >
+                    ⏻
+                  </button>
+                </div>
             </div>
           ))}
         </div>
@@ -492,22 +546,26 @@ const Users = () => {
         </Modal>
       )}
 
-      {dialog?.mode === 'delete' && (
-        <ConfirmDialog
-          title="Delete User?"
-          message="Are you sure you want to delete this user? This action cannot be undone."
-          details={[
-            { label: 'Username', value: dialog.user.username },
-            { label: 'Email', value: dialog.user.email },
-          ]}
-          confirmLabel="Delete"
-          cancelLabel="Cancel"
-          busy={saving}
-          error={formError}
-          onConfirm={handleDelete}
-          onCancel={closeDialog}
-        />
-      )}
+        {dialog?.mode === 'status' && (
+          <ConfirmDialog
+            title={dialog.user.status === 'Active' ? 'Deactivate User?' : 'Reactivate User?'}
+            message={
+              dialog.user.status === 'Active'
+                ? 'This user will lose access to the dashboard. Their historical records will be preserved.'
+                : 'This user will regain access to the dashboard using their existing account.'
+            }
+            details={[
+              { label: 'Username', value: dialog.user.username },
+              { label: 'Email', value: dialog.user.email },
+            ]}
+            confirmLabel={dialog.user.status === 'Active' ? 'Deactivate' : 'Reactivate'}
+            cancelLabel="Cancel"
+            busy={saving}
+            error={formError}
+            onConfirm={handleStatusChange}
+            onCancel={closeDialog}
+          />
+        )}
     </div>
   );
 };

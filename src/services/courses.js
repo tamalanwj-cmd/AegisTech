@@ -11,6 +11,7 @@ const normalizeCourse = (row) => ({
     enrollmentId: enrolment.id,
     userId: enrolment.account_id,
     role: enrolment.scenario_roles?.role_name || '',
+    roleId: enrolment.scenario_roles?.id || null,
   })),
   groupId: row.group_id ?? null,
   scenarioId: row.scenario_id ?? null,
@@ -77,6 +78,7 @@ export async function listCourses() {
         id,
         account_id,
         scenario_roles (
+          id,
           role_name
         )
       )

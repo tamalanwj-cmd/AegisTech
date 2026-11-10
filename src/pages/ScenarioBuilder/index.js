@@ -7,8 +7,14 @@ import {
   listInjects,
   updateInject,
 } from '../../services/injects';
+import {
+  listInjectRubrics,
+  saveInjectRubrics
+
+} from '../../services/injectRubrics';
 import Modal from '../../components/Modal';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import { listScenarioRoles } from '../../services/scenarioRoles';
 import './style.css';
 
 /* ------------------------------- helpers --------------------------------- */
@@ -22,8 +28,7 @@ const emptyForm = () => ({
   description: '',
   information: '',
   sequence: '',
-  assignedRole: '',
-  rubric: '',
+  roleRubrics: {},
 });
 
 /* ------------------------------- component -------------------------------- */
@@ -34,6 +39,7 @@ const ScenarioBuilder = () => {
 
   const [scenario, setScenario] = useState(null);
   const [injects, setInjects] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [notFound, setNotFound] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -50,14 +56,16 @@ const ScenarioBuilder = () => {
     setLoading(true);
     setLoadError('');
     try {
-      const [scenarioRows, injectRows] = await Promise.all([
+      const [scenarioRows, injectRows, roleRows] = await Promise.all([
         listScenarios(),
         listInjects(scenarioId),
+        listScenarioRoles(scenarioId),
       ]);
       const found = scenarioRows.find((s) => Number(s.Id) === scenarioId) || null;
       setScenario(found);
       setNotFound(!found);
       setInjects(found ? injectRows : []);
+      setRoles(found ? roleRows : []);
     } catch (e) {
       setLoadError(e.message || 'Could not load the scenario');
     } finally {
@@ -79,6 +87,7 @@ const ScenarioBuilder = () => {
     () => injects.reduce((max, inject) => Math.max(max, Number(inject.sequence) || 0), 0) + 1,
     [injects]
   );
+  
 
   /* ------------------------------- actions -------------------------------- */
 
@@ -88,17 +97,29 @@ const ScenarioBuilder = () => {
     setModal({ mode: 'create' });
   };
 
-  const openEdit = (inject) => {
-    setForm({
-      title: inject.title,
-      description: inject.description,
-      information: inject.information,
-      sequence: String(inject.sequence ?? ''),
-      assignedRole: inject.assignedRole,
-      rubric: inject.rubric || '',
-    });
+  const openEdit = async (inject) => {
     setFormError('');
-    setModal({ mode: 'edit', inject });
+
+    try {
+      const existingRubrics = await listInjectRubrics(inject.Id);
+
+      const roleRubrics = {};
+      existingRubrics.forEach((item) => {
+        roleRubrics[item.scenarioRoleId] = item.rubric;
+      });
+
+      setForm({
+        title: inject.title,
+        description: inject.description,
+        information: inject.information,
+        sequence: String(inject.sequence ?? ''),
+        roleRubrics,
+      });
+
+      setModal({ mode: 'edit', inject });
+    } catch (e) {
+      setFormError(e.message || 'Could not load existing rubrics');
+    }
   };
 
   const openDelete = (inject) => {
@@ -114,28 +135,49 @@ const ScenarioBuilder = () => {
   const setField = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const buildPayload = () => ({
-    title: form.title.trim(),
-    description: form.description,
-    information: form.information,
-    sequence: form.sequence === '' ? 0 : Number(form.sequence),
-    assignedRole: form.assignedRole,
-    rubric: form.rubric,
+  title: form.title.trim(),
+  description: form.description,
+  information: form.information,
+  sequence: form.sequence === '' ? 0 : Number(form.sequence),
   });
 
   const handleSave = async () => {
     if (!modal) return;
+
     setFormError('');
+
+    if (!form.title.trim()) {
+      setFormError('Please enter an Inject title.');
+      return;
+    }
+
     setSaving(true);
-    const isCreate = modal.mode === 'create';
+
     try {
       const payload = buildPayload();
-      if (isCreate) {
-        await createInject({ scenarioId, ...payload });
-        setNotice(`Inject "${payload.title}" added.`);
+      let injectId;
+
+      if (modal.mode === 'create') {
+        const createdInject = await createInject({
+          scenarioId,
+          ...payload,
+        });
+
+        injectId = createdInject.Id;
       } else {
-        await updateInject(modal.inject.Id, payload);
-        setNotice(`Inject "${payload.title}" updated.`);
+        injectId = modal.inject.Id;
+
+        await updateInject(injectId, payload);
       }
+
+      await saveInjectRubrics(injectId, form.roleRubrics);
+
+      setNotice(
+        `Inject "${payload.title}" ${
+          modal.mode === 'create' ? 'added' : 'updated'
+        }.`
+      );
+
       closeModal();
       await load();
     } catch (e) {
@@ -236,14 +278,7 @@ const ScenarioBuilder = () => {
                     <span className="inject-info-label">Information:</span> {inject.information}
                   </p>
                 )}
-                {inject.assignedRole && (
-                  <span className="inject-role">{inject.assignedRole}</span>
-                )}
-                {inject.rubric && (
-                  <span className="inject-role inject-rubric-tag" title={inject.rubric}>
-                    Rubric set
-                  </span>
-                )}
+
               </div>
               <div className="inject-actions">
                 <button
@@ -323,30 +358,36 @@ const ScenarioBuilder = () => {
               />
             </div>
 
-            <div className="form-field">
-              <label>Assigned Role</label>
-              <input
-                value={form.assignedRole}
-                onChange={setField('assignedRole')}
-                placeholder="e.g. Incident Commander"
-                disabled={saving}
-              />
-            </div>
+              {roles.map((role) => (
+                <div className="form-field span-2" key={role.Id}>
+                  <label>
+                    Marking Rubric — {role.name}
+                  </label>
 
-            <div className="form-field span-2">
-              <label>Marking Rubric</label>
-              <textarea
-                value={form.rubric}
-                onChange={setField('rubric')}
-                placeholder="What a complete answer must cover, one point per line. Shown to administrators while they mark this inject."
-                rows={4}
-                disabled={saving}
-              />
+                  <textarea
+                    value={form.roleRubrics[role.Id] || ''}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        roleRubrics: {
+                          ...prev.roleRubrics,
+                          [role.Id]: e.target.value,
+                        },
+                      }))
+                    }
+                    placeholder={`Enter marking criteria for ${role.name}...`}
+                    rows={4}
+                    disabled={saving}
+                  />
+                  <span className="field-hint">
+                    Assessment criteria specifically for {role.name}.
+                  </span>
+                </div>
+              ))}
               <span className="field-hint">
                 Shown in the marking workspace so every marker scores the same answer the same way.
               </span>
             </div>
-          </div>
 
           {formError && <div className="form-error">{formError}</div>}
         </Modal>
