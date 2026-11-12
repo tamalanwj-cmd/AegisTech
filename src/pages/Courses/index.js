@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { createCourse, deleteCourse, listCourses, updateCourse } from '../../services/courses';
-import { listScenarios } from '../../services/scenarios';
+import { listScenarios, listScenarioRoles } from '../../services/scenarios';
 import { listGroups } from '../../services/groups';
 import { listUsers } from '../../services/auth';
-import { listInjects } from '../../services/injects';
 import Modal from '../../components/Modal';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import './style.css';
@@ -125,54 +124,65 @@ const Courses = () => {
   };
 
   // "/admin/courses?new=1" (dashboard quick action) opens the create dialog.
-  useEffect(() => {
-    if (loading || loadError) return;
-    if (searchParams.get('new') !== '1') return;
-    setForm(emptyForm());
-    setFormError('');
-    setRoleOptions([]);
-    setModal({ mode: 'create' });
-    const next = new URLSearchParams(searchParams);
-    next.delete('new');
-    setSearchParams(next, { replace: true });
-  }, [loading, loadError, searchParams, setSearchParams]);
+    useEffect(() => {
+      if (loading || loadError) return;
+      if (searchParams.get('new') !== '1') return;
+      setForm(emptyForm());
+      setFormError('');
+      setRoleOptions([]);
+      setModal({ mode: 'create' });
+      const next = new URLSearchParams(searchParams);
+      next.delete('new');
+      setSearchParams(next, { replace: true });
+    }, [loading, loadError, searchParams, setSearchParams]);
 
-  const setField = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
+    const setField = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }));
 
-  /** Enrolled participant roles come from the selected scenario's injects. */
+    /** Enrolled participant roles come from the selected scenario's roles. */
   useEffect(() => {
     if (!modal) return undefined;
+
     const scenarioId = form.scenarioId;
+
     if (!scenarioId) {
       setRoleOptions([]);
       return undefined;
     }
+
     let cancelled = false;
+
     setRolesLoading(true);
-    listInjects(scenarioId)
-      .then((injects) => {
+
+    listScenarioRoles(scenarioId)
+      .then((roles) => {
         if (cancelled) return;
-        const roles = Array.from(
-          new Set(injects.map((i) => i.assignedRole).filter(Boolean))
-        );
-        setRoleOptions(roles);
-        if (roles.length) {
-          // Keep already-chosen roles while they still exist on the scenario.
-          setForm((prev) => {
-            const next = prev.enrolments.map((e) =>
-              roles.includes(e.role) ? e : { ...e, role: '' }
-            );
-            const changed = next.some((e, i) => e.role !== prev.enrolments[i].role);
-            return changed ? { ...prev, enrolments: next } : prev;
-          });
-        }
+
+        const roleNames = roles
+          .map((role) => role.role_name)
+          .filter(Boolean);
+
+        setRoleOptions(roleNames);
+
+        setForm((prev) => {
+          const next = prev.enrolments.map((e) =>
+            roleNames.includes(e.role) ? e : { ...e, role: '' }
+          );
+
+          const changed = next.some(
+            (e, i) => e.role !== prev.enrolments[i].role
+          );
+
+          return changed ? { ...prev, enrolments: next } : prev;
+        });
       })
-      .catch(() => {
+      .catch((error) => {
+        console.error('Could not load scenario roles:', error);
         if (!cancelled) setRoleOptions([]);
       })
       .finally(() => {
         if (!cancelled) setRolesLoading(false);
       });
+
     return () => {
       cancelled = true;
     };

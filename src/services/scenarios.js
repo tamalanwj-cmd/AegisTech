@@ -80,6 +80,23 @@ export async function listScenarios() {
   return (data || []).map(normalizeScenario);
 }
 
+export async function listScenarioRoles(scenarioId) {
+    if (!scenarioId) return [];
+
+    const { data, error } = await supabase
+      .from('scenario_roles')
+      .select('id, role_name, description, scenario_id')
+      .eq('scenario_id', scenarioId)
+      .order('id', { ascending: true });
+
+    if (error) {
+      console.error('Failed to retrieve scenario roles:', error);
+      throw new Error(error.message || 'Could not load scenario roles');
+    }
+
+    return data || [];
+  }
+
 export async function createScenario({
   name,
   description,
