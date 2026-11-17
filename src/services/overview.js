@@ -131,14 +131,6 @@ export async function loadOverview() {
 
   try {
     responses = await listResponses();
-    console.table(responses.map((r) => ({
-    Id: r.Id,
-    courseId: r.courseId,
-    enrollmentId: r.enrollmentId,
-    answer: r.answer,
-    submittedAt: r.submittedAt,
-    marks: r.marks
-  })));
   } catch (error) {
     console.error('[Marking] Failed to retrieve responses:', error);
     responsesAvailable = false;
