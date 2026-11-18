@@ -30,6 +30,7 @@ const ParticipantDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [resultsByScenario, setResultsByScenario] = useState({});
+  const [statusByEnrollment, setStatusByEnrollment] = useState({});
 
   const userId = user?.Id;
   const username = user?.Name || user?.UserName || 'Participant';
@@ -78,6 +79,7 @@ const ParticipantDashboard = () => {
       setEnrolments(myEnrolments);
 
       const results = {};
+      const resultsStatus = {};
 
       await Promise.all(
         myEnrolments.map(async (enrolment) => {
@@ -105,12 +107,13 @@ const ParticipantDashboard = () => {
            
 
             const session = getSession(enrolment.enrollmentId);
+            const submittedIds = new Set(session?.submitted || []).map(Number);
 
             const completed =
               injects.length > 0 &&
               session?.completedAt &&
               injects.every((inject) =>
-                session.submitted.includes(inject.Id)
+                submittedIds.has(Number(inject.Id))
               );
 
             const allMarked =
@@ -118,6 +121,12 @@ const ParticipantDashboard = () => {
               injects.every((inject) =>
                 isMarked(responseByInject.get(Number(inject.Id)))
               );
+
+              resultsStatus[enrolment.enrollmentId] = allMarked
+                ? 'Completed'
+                : submittedIds.size > 0
+                ? 'In progress'
+                : 'Not Started';
 
             if (allMarked) {
               results[enrolment.enrollmentId] = {
@@ -142,6 +151,7 @@ const ParticipantDashboard = () => {
       );
 
       setResultsByScenario(results);
+      setStatusByEnrollment(resultsStatus);
     } catch (error) {
       setLoadError(error.message || 'Could not load your courses');
     } finally {
@@ -158,7 +168,7 @@ const ParticipantDashboard = () => {
 
   const cards = enrolments.map((e) => ({
     ...e,
-    status: enrolmentStatus(e.enrollmentId),
+    status: statusByEnrollment[e.enrollmentId] || 'Not Started',
   }));
 
   const assignedCourses = cards.filter(

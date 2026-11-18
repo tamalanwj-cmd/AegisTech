@@ -77,6 +77,7 @@ const Users = () => {
 
   const [dialog, setDialog] = useState(null); // { mode: 'create' | 'edit' | 'status', user? }
   const [form, setForm] = useState(emptyCreateForm);
+  const [showPasswordReset , setShowPasswordReset ] = useState(false);
   const [formError, setFormError] = useState('');
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState('');
@@ -153,6 +154,8 @@ const Users = () => {
       email: user.email,
       role: selectableRole(user.role),
       status: user.status,
+      password:'',
+      confirmPassword:'',
     });
     setFormError('');
     setDialog({ mode: 'edit', user });
@@ -228,11 +231,27 @@ const Users = () => {
             );
           }
         const username = form.username.trim();
+        const password = form.password || '';
+        const confirmPassword = form.confirmPassword || '';
+
+        if (password || confirmPassword) {
+          if (password.length < PASSWORD_MIN_LENGTH) {
+            throw new Error(
+              `Password must be at least ${PASSWORD_MIN_LENGTH} characters`
+            );
+          }
+
+          if (password !== confirmPassword) {
+            throw new Error('Passwords do not match');
+          }
+        }
+
         await updateUser(target.Id, {
           username,
           email: form.email.trim(),
           role: form.role,
           status: form.status,
+          ...(password ? { password } : {}),
         });
         setNotice(`Account "${username}" updated.`);
       }
@@ -541,6 +560,52 @@ const Users = () => {
                 ))}
               </select>
             </div>
+            <div className="form-field password-reset-toggle">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={showPasswordReset}
+                    onChange={(e) => {
+                      setShowPasswordReset(e.target.checked);
+                      setForm((prev) => ({
+                        ...prev,
+                        password: '',
+                        confirmPassword: '',
+                      }));
+                    }}
+                    disabled={saving}
+                  />
+                  Reset Password
+                </label>
+            </div>
+
+            {showPasswordReset && (
+              <>
+                <div className="form-field">
+                  <label>New Password</label>
+                  <input
+                    type="password"
+                    value={form.password}
+                    onChange={setField('password')}
+                    placeholder={`Min ${PASSWORD_MIN_LENGTH} characters`}
+                    disabled={saving}
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label>Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={form.confirmPassword}
+                    onChange={setField('confirmPassword')}
+                    disabled={saving}
+                    autoComplete="new-password"
+                    onKeyDown={submitOnEnter}
+                  />
+                </div>
+              </>
+            )}
           </div>
           {formError && <div className="form-error">{formError}</div>}
         </Modal>

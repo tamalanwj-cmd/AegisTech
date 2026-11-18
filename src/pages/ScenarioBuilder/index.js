@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { listScenarios } from '../../services/scenarios';
+import { listCourses } from '../../services/courses';
+
 import {
   createInject,
   deleteInject,
@@ -41,6 +43,7 @@ const ScenarioBuilder = () => {
   const [injects, setInjects] = useState([]);
   const [roles, setRoles] = useState([]);
   const [notFound, setNotFound] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -55,13 +58,27 @@ const ScenarioBuilder = () => {
   const load = useCallback(async () => {
     setLoading(true);
     setLoadError('');
+
     try {
-      const [scenarioRows, injectRows, roleRows] = await Promise.all([
+      const [scenarioRows, injectRows, roleRows, courseRows] = await Promise.all([
         listScenarios(),
         listInjects(scenarioId),
         listScenarioRoles(scenarioId),
+        listCourses(),
       ]);
-      const found = scenarioRows.find((s) => Number(s.Id) === scenarioId) || null;
+
+      const locked = courseRows.some(
+        (course) =>
+          Number(course.scenarioId) === scenarioId &&
+          course.enrolments.length > 0
+      );
+
+      setIsLocked(locked);
+
+      const found = scenarioRows.find(
+        (s) => Number(s.Id) === scenarioId
+      ) || null;
+
       setScenario(found);
       setNotFound(!found);
       setInjects(found ? injectRows : []);
@@ -256,7 +273,12 @@ const ScenarioBuilder = () => {
             <span className={`status-tag ${statusSlug(scenario.status)}`}>{scenario.status}</span>
           </div>
         </div>
-        <button className="btn-add-inject" onClick={openCreate} disabled={saving}>
+        <button
+          className="btn-add-inject"
+            onClick={openCreate}
+            disabled={saving || isLocked}
+            title={isLocked ? 'This scenario is locked because participants are enrolled.' : 'Add Inject'}
+            >
           Add Inject
         </button>
       </div>
@@ -285,8 +307,10 @@ const ScenarioBuilder = () => {
                   type="button"
                   className="inject-btn"
                   onClick={() => openEdit(inject)}
-                  disabled={saving}
-                  title="Edit inject"
+                  disabled={saving || isLocked }
+                  title={isLocked ? 'Inject editing locked: This scenario has participants'
+                                  : 'Edit Inject'
+                  }
                 >
                   ✎
                 </button>
@@ -294,8 +318,10 @@ const ScenarioBuilder = () => {
                   type="button"
                   className="inject-btn danger"
                   onClick={() => openDelete(inject)}
-                  disabled={saving}
-                  title="Delete inject"
+                  disabled={saving || isLocked }
+                  title={ isLocked? 'Deletion is locked: This scenario has participants'
+                                  : 'Delete Inject'
+                  }
                 >
                   🗑
                 </button>

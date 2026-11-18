@@ -35,7 +35,7 @@ const PortalSelector = () => {
       <div className="header-section">
         <div className="logo-icon"></div>
         <h1>TSPES</h1>
-        <p className="subtitle">Tabletop Scenario Planning and Education System</p>
+        <p className="subtitle">Tabletop Scenario Planning and Exercise System</p>
         <p className="portal-desc">
           A training platform for designing and running tabletop exercises.
           Choose how you would like to sign in.
@@ -60,7 +60,7 @@ const PortalSelector = () => {
 
       <div className="portal-footer">
         <p className="portal-footer-brand">
-          © {new Date().getFullYear()} Deakin University — Centre for Emergency Management
+          © {new Date().getFullYear()} Aegis Tech  — Tabletop scenario planning and exercise system
         </p>
       </div>
     </div>

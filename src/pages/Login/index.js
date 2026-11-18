@@ -130,7 +130,7 @@
         </div>
 
         <div className="footer-note">
-          © {new Date().getFullYear()} Deakin University — Centre for Emergency Management
+          © {new Date().getFullYear()} Aegis Tech  — Tabletop education and scenario planning system
         </div>
       </div>
     );
