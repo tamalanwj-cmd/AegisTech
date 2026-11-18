@@ -14,14 +14,6 @@ const statusClass = {
   'Completed': 'pd-status-completed',
 };
 
-function enrolmentStatus(enrollmentId) {
-  const session = getSession(enrollmentId);
-  if (!session) return 'Not Started';
-  if (session.completedAt) return 'Completed';
-  if (session.submitted.length > 0) return 'In Progress';
-  return 'Not Started';
-}
-
 const ParticipantDashboard = () => {
   const navigate = useNavigate();
 
