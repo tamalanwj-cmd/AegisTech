@@ -5,7 +5,11 @@ import { getCurrentUser } from '../../services/auth';
 import { listMyEnrolments } from '../../services/enrolments';
 import { getSession } from '../../services/exerciseSession';
 import { loadExerciseContext } from '../../services/participantFlow';
-import { listResponses, isMarked } from '../../services/responses';
+import {
+  listResponses,
+  isMarked,
+  isAnswered,
+} from '../../services/responses';
 import './style.css';
 
 const statusClass = {
@@ -39,7 +43,9 @@ const ParticipantDashboard = () => {
           if (currentUser) {
             setUser(currentUser);
           } else {
-            setLoadError('Could not retrieve your account. Please log in again.');
+            setLoadError(
+              'Could not retrieve your account. Please log in again.'
+            );
             setLoading(false);
           }
         }
@@ -47,7 +53,9 @@ const ParticipantDashboard = () => {
         console.error('Failed to load participant:', error);
 
         if (mounted) {
-          setLoadError('Could not retrieve your account. Please log in again.');
+          setLoadError(
+            'Could not retrieve your account. Please log in again.'
+          );
           setLoading(false);
         }
       }
@@ -60,6 +68,7 @@ const ParticipantDashboard = () => {
     };
   }, []);
 
+  // Load enrolments, exercise progress and assessment results.
   const load = useCallback(async () => {
     if (!userId) return;
 
@@ -68,6 +77,7 @@ const ParticipantDashboard = () => {
 
     try {
       const myEnrolments = await listMyEnrolments(userId);
+
       setEnrolments(myEnrolments);
 
       const results = {};
@@ -76,57 +86,85 @@ const ParticipantDashboard = () => {
       await Promise.all(
         myEnrolments.map(async (enrolment) => {
           try {
+            // Retrieve the scenario and its injects.
             const context = await loadExerciseContext(
               enrolment.scenarioId,
               userId,
               enrolment.enrollmentId
             );
 
-           const injects = context.injects || [];
+            const injects = context.injects || [];
 
+            // Retrieve responses from Supabase.
             const responses = await listResponses({
               scenarioId: enrolment.scenarioId,
               courseId: enrolment.courseId,
               userId,
             });
 
+            // Keep only responses belonging to this enrolment.
+            const enrolmentResponses = responses.filter(
+              (response) =>
+                Number(response.enrollmentId) ===
+                Number(enrolment.enrollmentId)
+            );
+
+            // Match each response to its corresponding inject.
             const responseByInject = new Map(
-              responses.map((response) => [
+              enrolmentResponses.map((response) => [
                 Number(response.injectId),
                 response,
               ])
             );
-           
 
+            // Retrieve local exercise progress.
             const session = getSession(enrolment.enrollmentId);
-            const submittedIds = new Set(session?.submitted || []).map(Number);
 
-            const completed =
+            const submittedIds = new Set(
+              (session?.submitted || []).map(Number)
+            );
+
+            // Determine whether all injects have been answered.
+            const allAnswered =
               injects.length > 0 &&
-              session?.completedAt &&
               injects.every((inject) =>
-                submittedIds.has(Number(inject.Id))
+                isAnswered(
+                  responseByInject.get(Number(inject.Id))
+                )
               );
 
+            // Determine whether at least one inject has been answered.
+            const hasAnswered = injects.some((inject) =>
+              isAnswered(
+                responseByInject.get(Number(inject.Id))
+              )
+            );
+
+            // Determine whether every inject has been marked.
             const allMarked =
-              completed &&
+              allAnswered &&
               injects.every((inject) =>
-                isMarked(responseByInject.get(Number(inject.Id)))
+                isMarked(
+                  responseByInject.get(Number(inject.Id))
+                )
               );
 
-              resultsStatus[enrolment.enrollmentId] = allMarked
-                ? 'Completed'
-                : submittedIds.size > 0
-                ? 'In progress'
-                : 'Not Started';
+            // Determine the participant's exercise status.
+            resultsStatus[enrolment.enrollmentId] = allAnswered
+              ? 'Completed'
+              : hasAnswered || submittedIds.size > 0
+              ? 'In Progress'
+              : 'Not Started';
 
+            // Calculate the total exercise score.
             if (allMarked) {
               results[enrolment.enrollmentId] = {
                 totalMarks: injects.reduce(
                   (sum, inject) =>
                     sum +
                     Number(
-                      responseByInject.get(Number(inject.Id))?.marks || 0
+                      responseByInject.get(Number(inject.Id))
+                        ?.marks || 0
                     ),
                   0
                 ),
@@ -144,7 +182,9 @@ const ParticipantDashboard = () => {
 
       setResultsByScenario(results);
       setStatusByEnrollment(resultsStatus);
+
     } catch (error) {
+      console.error('Failed to load participant dashboard:', error);
       setLoadError(error.message || 'Could not load your courses');
     } finally {
       setLoading(false);
@@ -158,13 +198,16 @@ const ParticipantDashboard = () => {
     }
   }, [userId, load]);
 
-  const cards = enrolments.map((e) => ({
-    ...e,
-    status: statusByEnrollment[e.enrollmentId] || 'Not Started',
+  // Apply the retrieved exercise status to each enrolment.
+  const cards = enrolments.map((enrolment) => ({
+    ...enrolment,
+    status:
+      statusByEnrollment[enrolment.enrollmentId] || 'Not Started',
   }));
 
+  // Count courses that have not been completed.
   const assignedCourses = cards.filter(
-  (c) => c.status !== 'Completed'
+    (card) => card.status !== 'Completed'
   ).length;
 
   const dateStr = new Date().toLocaleDateString('en-US', {
@@ -174,17 +217,18 @@ const ParticipantDashboard = () => {
     day: 'numeric',
   });
 
+  // Navigate to the exercise or its completed summary.
   const openExercise = (card) => {
-  if (card.status === 'Completed') {
-    navigate(
-      `/participant/exercise/${card.scenarioId}/summary?enrollmentId=${card.enrollmentId}`
-    );
-  } else {
-    navigate(
-      `/participant/exercise/${card.scenarioId}?enrollmentId=${card.enrollmentId}`
-    );
-  }
-};
+    if (card.status === 'Completed') {
+      navigate(
+        `/participant/exercise/${card.scenarioId}/summary?enrollmentId=${card.enrollmentId}`
+      );
+    } else {
+      navigate(
+        `/participant/exercise/${card.scenarioId}?enrollmentId=${card.enrollmentId}`
+      );
+    }
+  };
 
   return (
     <>
@@ -206,7 +250,9 @@ const ParticipantDashboard = () => {
       </div>
 
       {loading && (
-        <div className="pd-state">Loading your courses…</div>
+        <div className="pd-state">
+          Loading your courses…
+        </div>
       )}
 
       {!loading && loadError && (
@@ -240,7 +286,10 @@ const ParticipantDashboard = () => {
                 : 'Start';
 
             return (
-              <div key={card.courseId} className="pd-exercise-card">
+              <div
+                key={card.enrollmentId}
+                className="pd-exercise-card"
+              >
                 <div className="pd-exercise-top">
                   <span
                     className={`pd-status ${statusClass[card.status]}`}
@@ -253,7 +302,9 @@ const ParticipantDashboard = () => {
                       card.role ? '' : ' pd-role-unassigned'
                     }`}
                   >
-                    {card.role ? `Role: ${card.role}` : 'Role: Not assigned'}
+                    {card.role
+                      ? `Role: ${card.role}`
+                      : 'Role: Not assigned'}
                   </span>
                 </div>
 
@@ -261,8 +312,13 @@ const ParticipantDashboard = () => {
                   {card.scenarioName}
                 </h3>
 
-                <p className="pd-exercise-course">{card.courseName}</p>
-                <p className="pd-exercise-crisis">{card.crisisType}</p>
+                <p className="pd-exercise-course">
+                  {card.courseName}
+                </p>
+
+                <p className="pd-exercise-crisis">
+                  {card.crisisType}
+                </p>
 
                 {resultsByScenario[card.enrollmentId] && (
                   <div className="pd-exercise-score">

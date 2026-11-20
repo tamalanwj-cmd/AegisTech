@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { getCurrentUser } from '../../services/auth';
 import { loadExerciseContext } from '../../services/participantFlow';
 import { getSession, totalTime } from '../../services/exerciseSession';
-import {formatDuration,listResponses,isMarked,} from '../../services/responses';
+import {formatDuration,listResponses,isMarked,isAnswered } from '../../services/responses';
 import './style.css';
 
 /**
@@ -80,7 +80,8 @@ const ExerciseSummary = () => {
     setSession(getSession(ctx.enrolment.enrollmentId));
 
     const savedMarks = await listResponses({
-      scenarioId: id,
+      scenarioId: ctx.enrolment.scenarioId,
+      courseId: ctx.enrolment.courseId,
       userId,
     });
 
@@ -160,15 +161,16 @@ const ExerciseSummary = () => {
     );
   }
 
+  const responseByInject = new Map(
+    gradingResponses.map((response) => [Number(response.injectId), response])
+  );
+
   const total = injects.length;
-  const submittedCount = injects.filter((i) => session.submitted.includes(i.Id)).length;
+
+  const submittedCount = injects.filter((inject) => isAnswered(responseByInject.get(Number(inject.Id)))).length;
   const completed = total > 0 && submittedCount === total;
   const progress = total > 0 ? Math.round((submittedCount / total) * 100) : 0;
   const role = enrolment?.role || '';
-
-    const responseByInject = new Map(
-    gradingResponses.map((response) => [Number(response.injectId), response])
-  );
 
   const allMarked =
     completed &&
@@ -234,7 +236,18 @@ const ExerciseSummary = () => {
         </div>
         <div className="sum-info-item">
           <span className="sum-info-label">Time Taken</span>
-          <span className="sum-info-value">{formatDuration(totalTime(session))}</span>
+          <span className="sum-info-value">
+            {formatDuration(
+              injects.reduce(
+                (sum, inject) =>
+                  sum +
+                  Number(
+                    responseByInject.get(Number(inject.Id))?.timeSpentSeconds || 0
+                  ),
+                0
+              )
+            )}
+          </span>
         </div>
         {completedStr && (
           <div className="sum-info-item">
@@ -262,8 +275,9 @@ const ExerciseSummary = () => {
       ) : (
         <div className="sum-history">
           {injects.map((inject, i) => {
-              const marking = responseByInject.get(Number(inject.Id));
-              const isSubmitted = session.submitted.includes(inject.Id);
+              const response = responseByInject.get(Number(inject.Id));
+              const marking = response;
+              const isSubmitted = isAnswered(response);
 
             return (
               <div key={inject.Id} className="sum-history-item pd-card">
@@ -271,7 +285,7 @@ const ExerciseSummary = () => {
                   <span className="sum-history-index">Inject {i + 1}</span>
                   <div className="sum-history-badges">
                     <span className="ex-inject-time">Inject {inject.sequence}</span>
-                    {session.timings?.[inject.Id] > 0 && (
+                    {session?.timings?.[inject.Id] > 0 && (
                       <span className="ex-timer">
                         ⏱ {formatDuration(session.timings[inject.Id])}
                       </span>
@@ -290,7 +304,7 @@ const ExerciseSummary = () => {
                 )}
                 <div className="sum-history-response">
                   <span className="sum-info-label">Your Response</span>
-                  <p>{session.responses[inject.Id] || 'No response recorded.'}</p>
+                  <p>{response?.answer || 'No response recorded.'}</p>
                 </div>
                   {allMarked && marking && (
                     <div className="sum-marking-result">
