@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { getCurrentUser } from '../../services/auth';
 import { loadExerciseContext } from '../../services/participantFlow';
-import { getSession, totalTime } from '../../services/exerciseSession';
+import { getSession } from '../../services/exerciseSession';
 import {formatDuration,listResponses,isMarked,isAnswered } from '../../services/responses';
 import './style.css';
 
